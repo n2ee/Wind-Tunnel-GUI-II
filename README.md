@@ -1,12 +1,16 @@
-# WindTunnel
+# WindTunnel II
 
 A data collection app.
 
-The design is closely coupled to the wind tunnel hardware - it measures angle
-of attack, lift and drag on the airfoil platform, plus airspeed.
+Closely related to the original, this version simplifies the data collection GUI
+to relflect the latest changes in the tunnel balance, with an eye towards migrating
+to flight hardware.
 
-Airspeed and angle of attack inputs are via Phidget voltage sensors, while lift
-and drag are measured with strain gauges connected to Phidget voltage ratio 
+The design is closely coupled to the wind tunnel hardware - it measures angle
+of attack and drag on the airfoil platform, plus airspeed.
+
+Airspeed and angle of attack inputs are via Phidget voltage sensors, while 
+drag is measured with strain gauges connected to Phidget voltage ratio 
 sensors.
 
 The sensors are periodically polled, the values conditioned, and the results
