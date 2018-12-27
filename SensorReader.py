@@ -48,15 +48,7 @@ class SensorReader(QThread):
         
         try:
             # Connect up to the phidget boards
-            serialNo = int(config.getItem("PhidgetBoards", "liftboardserialno"))
-            liftLeftPort = int(config.getItem("PhidgetBoards", "liftleftport"))
-            self.liftLeft = ForceBalanceBridge(serialNo, liftLeftPort)
-                    
-            liftCenterPort = int(config.getItem("PhidgetBoards", "liftcenterport"))
-            self.liftCenter = ForceBalanceBridge(serialNo, liftCenterPort)
-            
-            liftRightPort = int(config.getItem("PhidgetBoards", "liftrightport"))
-            self.liftRight = ForceBalanceBridge(serialNo, liftRightPort)
+            serialNo = int(config.getItem("PhidgetBoards", "dragboardserialno"))
             
             dragPort = int(config.getItem("PhidgetBoards", "dragport"))
             self.drag = ForceBalanceBridge(serialNo, dragPort)
@@ -88,9 +80,6 @@ class SensorReader(QThread):
         self.hotwire.close()
         self.airspeed.close()
         self.drag.close()
-        self.liftRight.close()
-        self.liftCenter.close()
-        self.liftLeft.close()
         
         self.wait()
      
@@ -107,9 +96,6 @@ class SensorReader(QThread):
                 currentSample.volts = self.volts.getVoltage()
                 currentSample.amps = self.amps.getVoltage()
             
-                currentSample.liftLeft = self.liftLeft.getVoltageRatio()
-                currentSample.liftCenter = self.liftCenter.getVoltageRatio()
-                currentSample.liftRight = self.liftRight.getVoltageRatio()
                 currentSample.drag = self.drag.getVoltageRatio()
                 
                 currentSample.timestamp = datetime.datetime.now()

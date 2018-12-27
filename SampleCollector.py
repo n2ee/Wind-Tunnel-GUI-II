@@ -27,9 +27,6 @@ class SampleCollector(QThread):
     saveSamples = False
     samplesToSave = 1
     f = None
-    leftLoadTare = 0.0
-    centerLoadTare = 0.0
-    rightLoadTare = 0.0
     dragTare = 0.0
     updateLoadTare = False
     aoaTare = 0.0 # We call this 'tare' to distinguish from the y-intercept of the raw value
@@ -48,12 +45,6 @@ class SampleCollector(QThread):
         QThread.__init__(self)
         self.dataQ = dQ
         config = TunnelConfig()
-        self.liftLeftScaling = float(config.getItem("StrainGauges",
-                                                    "liftleftscaling"))
-        self.liftCenterScaling = float(config.getItem("StrainGauges",
-                                                      "liftcenterscaling"))
-        self.liftRightScaling = float(config.getItem("StrainGauges",
-                                                     "liftrightscaling"))
         self.dragScaling = float(config.getItem("StrainGauges", "dragscaling"))
 
         self.aoaSlope = float(config.getItem("AoA", "slope"))
@@ -164,13 +155,11 @@ class SampleCollector(QThread):
     def dumpData(self, processedSample):
         if self.dumpInterval == 10:
             self.dumpInterval = 0
-            print("V=%f, A=%f, as=%f, hw=%f, wingAoA=%f, platAoA=%f, uncorrDrag=%f, drag=%f, LL=%f, LC=%f, LR=%f, TL=%f" \
+            print("V=%f, A=%f, as=%f, hw=%f, wingAoA=%f, platAoA=%f, uncorrDrag=%f, drag=%f" \
                   % (processedSample.volts, processedSample.amps,
                      processedSample.airspeed, processedSample.hotwire,
                      processedSample.wingAoA, processedSample.platformAoA, 
-                     self.uncorrectedDrag, processedSample.drag,
-                     processedSample.liftLeft, processedSample.liftCenter,
-                     processedSample.liftRight, processedSample.totalLift))
+                     self.uncorrectedDrag, processedSample.drag))
         else:
             self.dumpInterval += 1
 
@@ -179,11 +168,6 @@ class SampleCollector(QThread):
         # updating the GUI, processing data, and tossing it into a file
         # when asked to.
 
-        liftLeftFilter = RollingAverageFilter(10)
-        liftCenterFilter = RollingAverageFilter(10)
-        liftRightFilter = RollingAverageFilter(10)
-        totalLiftFilter = RollingAverageFilter(10)
-        pitchMomentFilter = RollingAverageFilter(10)
         dragFilter = RollingAverageFilter(10)
         airspeedFilter = RollingAverageFilter(10)
         hotwireFilter = RollingAverageFilter(10)
@@ -197,9 +181,6 @@ class SampleCollector(QThread):
 
             if (self.updateLoadTare):
                 self.updateLoadTare = False
-                self.leftLoadTare = latestSample.liftLeft
-                self.centerLoadTare = latestSample.liftCenter
-                self.rightLoadTare = latestSample.liftRight
                 self.dragTare = latestSample.drag
 
             if (self.updateAoAWingTare):
@@ -221,27 +202,16 @@ class SampleCollector(QThread):
                 self.persist.setItem("Airspeed", "Tare",
                                      str(self.airspeedTare))
 
-            # Get the latest lift & drag, adjust for tare
-            rawLiftLeft = latestSample.liftLeft - self.leftLoadTare
-            rawLiftCenter = latestSample.liftCenter - self.centerLoadTare
-            rawLiftRight = latestSample.liftRight - self.rightLoadTare
+            # Get the latest drag, adjust for tare
             netDragCounts = latestSample.drag - self.dragTare
 
             # Scale to taste
-            liftLeft = rawLiftLeft * self.liftLeftScaling
-            liftCenter = rawLiftCenter * self.liftCenterScaling
-            liftRight = rawLiftRight * self.liftRightScaling
             volts = latestSample.volts * self.voltsSlope + self.voltsZero
             # Because of the A/D resolution and the small values of deltaVolts,
             # we may need to filter amps to smooth out the appearance on the
             # display.
             deltaVolts = latestSample.amps * self.ampsSlope + self.ampsZero
             amps = deltaVolts / self.shuntOhms
-
-            # Crunch the total lift and pitching moments
-            totalLift = liftLeft + liftCenter + liftRight
-            pitchMoment = (liftCenter * 5.63) + \
-                            (liftLeft + liftRight) * 1.44
 
             # Crunch the platform AoA and the Wing AoA
             platformAoA = (int(latestSample.aoa) - self.aoaPlatformTare) * self.aoaSlope
@@ -255,15 +225,11 @@ class SampleCollector(QThread):
             # And again, add in the aoa platform offset
             wingAoA += self.aoaPlatformOffset
             
-            # Scale the drag value and remove the lift component
+            # Scale the drag value
             self.uncorrectedDrag = netDragCounts * self.dragScaling
             
-            # drag = (self.uncorrectedDrag - \
-            #     (totalLift * sin(radians(platformAoA)))) / cos(radians(platformAoA))
-
-            drag = self.uncorrectedDrag * cos(radians(platformAoA)) + \
-                   totalLift * sin(radians(platformAoA))
-            
+            drag = self.uncorrectedDrag * cos(radians(platformAoA))
+                   
             # Compute actual airspeed
             asCounts = latestSample.airspeed
             asPressure = (asCounts - self.airspeedTare) / 1379.3
@@ -285,15 +251,8 @@ class SampleCollector(QThread):
 
 
             # Generate filtered values
-            fLiftLeft = liftLeftFilter.get_filtered_value(liftLeft)
-            fLiftCenter = liftCenterFilter.get_filtered_value(liftCenter)
-            fLiftRight = liftRightFilter.get_filtered_value(liftRight)
             fDrag = dragFilter.get_filtered_value(drag)
-            fTotalLift = totalLiftFilter.get_filtered_value(totalLift)
-            fPitchMoment = pitchMomentFilter.get_filtered_value(pitchMoment)
-            fTotalLiftStdDev = sqrt(totalLiftFilter.get_variance())
             fDragStdDev = sqrt(dragFilter.get_variance())
-            fPitchMomentStdDev = sqrt(pitchMomentFilter.get_variance())
             fAirspeed = airspeedFilter.get_filtered_value(airspeed)
             fHotwire = hotwireFilter.get_filtered_value(hotwire)
 
@@ -306,15 +265,8 @@ class SampleCollector(QThread):
                                               latestSample.airspeed,
                                               fAirspeed,
                                               fHotwire,
-                                              fLiftLeft,
-                                              fLiftCenter,
-                                              fLiftRight,
-                                              fTotalLift,
-                                              fTotalLiftStdDev,
                                               fDrag,
                                               fDragStdDev,
-                                              fPitchMoment,
-                                              fPitchMomentStdDev,
                                               latestSample.timestamp)
 
             if (self.saveSamples):
