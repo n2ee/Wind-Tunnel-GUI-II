@@ -181,13 +181,13 @@ class TunnelGui(QtWidgets.QMainWindow, Tunnel_Model.Ui_MainWindow):
         stddev = float('%.2f' % stddev)
         itemKg = QTableWidgetItem()
         itemKg.setData(Qt.DisplayRole, drag)
-        self.tblDrag.setItem(1, 0, itemKg)
+        self.tblDrag.setItem(0, 0, itemKg)
         itemLb = QTableWidgetItem()
         itemLb.setData(Qt.DisplayRole, float('%.2f' % (drag * 2.2046)))
-        self.tblDrag.setItem(1, 1, itemLb)
+        self.tblDrag.setItem(0, 1, itemLb)
         fItemKg = QTableWidgetItem()
         fItemKg.setData(Qt.DisplayRole, stddev)
-        self.tblDrag.setItem(1, 2, fItemKg)
+        self.tblDrag.setItem(0, 2, fItemKg)
 
     def setPower(self, power):
         power = float('%.1f' % power)
