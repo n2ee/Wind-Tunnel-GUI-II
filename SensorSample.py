@@ -9,21 +9,20 @@ import datetime
 
 class SensorSample(object):
 
-    def __init__(self, volts = 0.0, amps = 0.0, aoa = 0.0,
+    def __init__(self, volts = 0.0, amps = 0.0,
                  airspeed = 0.0, hotwire = 0.0, drag = 0.0,
                  timestamp = datetime.datetime.now()):
         self.volts = volts
         self.amps = amps
-        self.aoa = aoa
         self.airspeed = airspeed
         self.hotwire = hotwire
         self.drag = drag
         self.timestamp = timestamp
 
     def __repr__(self):
-        return "volts: %f, amps: %f, aoa: %f, airspeed: %f, " \
+        return "volts: %f, amps: %f, airspeed: %f, " \
                 "hotwire: %f, drag: %f, timestamp: %s" % \
-            (self.volts, self.amps, self.aoa, self.airspeed,
+            (self.volts, self.amps, self.airspeed,
              self.hotwire, self.drag, self.timestamp)        
         
 if __name__ == "__main__":

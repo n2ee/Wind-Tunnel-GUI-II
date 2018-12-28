@@ -29,10 +29,6 @@ class SampleCollector(QThread):
     f = None
     dragTare = 0.0
     updateLoadTare = False
-    aoaTare = 0.0 # We call this 'tare' to distinguish from the y-intercept of the raw value
-    updateAoAWingTare = False
-    updateAoAPlatformTare = False
-    updateAoAPlatformOffset = False
     airspeedTare = 0
     updateAirspeedTare = False
     dumpInterval = 0
@@ -46,8 +42,6 @@ class SampleCollector(QThread):
         self.dataQ = dQ
         config = TunnelConfig()
         self.dragScaling = float(config.getItem("StrainGauges", "dragscaling"))
-
-        self.aoaSlope = float(config.getItem("AoA", "slope"))
 
         self.voltsSlope = float(config.getItem("Volts", "slope"))
         self.voltsZero = float(config.getItem("Volts", "zero"))
@@ -65,24 +59,6 @@ class SampleCollector(QThread):
 
         self.hotwireZero = float(config.getItem("Hotwire", "zero"))
         self.hotwireSlope = float(config.getItem("Hotwire", "slope"))
-
-        aoaWingError = self.persist.getItem("AoA", "WingError")
-        if aoaWingError == None:
-            self.aoaWingError = 0
-        else:
-            self.aoaWingError = int(aoaWingError)
-
-        aoaPlatformTare = self.persist.getItem("AoA", "PlatformTare")
-        if aoaPlatformTare == None:
-            self.aoaPlatformTare = 0
-        else:
-            self.aoaPlatformTare = int(aoaPlatformTare)
-
-        aoaPlatformOffset = self.persist.getItem("AoA", "PlatformOffset")
-        if aoaPlatformOffset == None:
-            self.aoaPlatformOffset = 0.0
-        else:
-            self.aoaPlatformOffset = float(aoaPlatformOffset)
 
         airspeedTare = self.persist.getItem("Airspeed", "Tare")
         if airspeedTare == None:
@@ -114,19 +90,8 @@ class SampleCollector(QThread):
             print ("Could not open: ", destFile)
             self.saveSamples = False
 
-    def setAoAPlatformOffset(self, offset):
-        self.aoaPlatformOffset = offset
-        self.persist.setItem("AoA", "PlatformOffset", 
-                             str(self.aoaPlatformOffset))
-
     def setLoadTare(self):
         self.updateLoadTare = True
-
-    def setAoAWingTare(self):
-        self.updateAoAWingTare = True
-
-    def setAoAPlatformTare(self):
-        self.updateAoAPlatformTare = True
 
     def setAirspeedTare(self):
         self.updateAirspeedTare = True
@@ -155,10 +120,9 @@ class SampleCollector(QThread):
     def dumpData(self, processedSample):
         if self.dumpInterval == 10:
             self.dumpInterval = 0
-            print("V=%f, A=%f, as=%f, hw=%f, wingAoA=%f, platAoA=%f, uncorrDrag=%f, drag=%f" \
+            print("V=%f, A=%f, as=%f, hw=%f, uncorrDrag=%f, drag=%f" \
                   % (processedSample.volts, processedSample.amps,
                      processedSample.airspeed, processedSample.hotwire,
-                     processedSample.wingAoA, processedSample.platformAoA, 
                      self.uncorrectedDrag, processedSample.drag))
         else:
             self.dumpInterval += 1
@@ -171,8 +135,6 @@ class SampleCollector(QThread):
         dragFilter = RollingAverageFilter(10)
         airspeedFilter = RollingAverageFilter(10)
         hotwireFilter = RollingAverageFilter(20)
-        wingAoA = 0
-        platformAoA = 0
         
         drag = 0.0
 
@@ -182,19 +144,6 @@ class SampleCollector(QThread):
             if (self.updateLoadTare):
                 self.updateLoadTare = False
                 self.dragTare = latestSample.drag
-
-            if (self.updateAoAWingTare):
-                self.updateAoAWingTare = False
-                self.aoaWingError = self.aoaPlatformTare - int(latestSample.aoa)
-                self.persist.setItem("AoA", "WingError", str(self.aoaWingError))
-
-            if (self.updateAoAPlatformTare):
-                self.updateAoAPlatformTare = False
-                self.aoaPlatformTare = int(latestSample.aoa)
-                self.persist.setItem("AoA", "PlatformTare", 
-                                     str(self.aoaPlatformTare))
-                self.aoaWingError = 0
-                self.persist.setItem("AoA", "WingError", str(self.aoaWingError))
 
             if (self.updateAirspeedTare):
                 self.updateAirspeedTare = False
@@ -213,22 +162,11 @@ class SampleCollector(QThread):
             deltaVolts = latestSample.amps * self.ampsSlope + self.ampsZero
             amps = deltaVolts / self.shuntOhms
 
-            # Crunch the platform AoA and the Wing AoA
-            platformAoA = (int(latestSample.aoa) - self.aoaPlatformTare) * self.aoaSlope
-
-            # Add in the previously determined AoA platform offset
-            platformAoA += self.aoaPlatformOffset
-                        
-            wingAoA = (int(latestSample.aoa) + \
-                       self.aoaWingError - self.aoaPlatformTare) * self.aoaSlope
-
-            # And again, add in the aoa platform offset
-            wingAoA += self.aoaPlatformOffset
-            
             # Scale the drag value
             self.uncorrectedDrag = netDragCounts * self.dragScaling
             
-            drag = self.uncorrectedDrag * cos(radians(platformAoA))
+            # FIXME - Any drag corrections here?
+            drag = self.uncorrectedDrag
                    
             # Compute actual airspeed
             asCounts = latestSample.airspeed
@@ -265,9 +203,6 @@ class SampleCollector(QThread):
             processedSample = ProcessedSample(volts,
                                               amps,
                                               (volts * amps),
-                                              latestSample.aoa,
-                                              wingAoA,
-                                              platformAoA,
                                               latestSample.airspeed,
                                               fAirspeed,
                                               fHotwire,

@@ -6,68 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>451</width>
-    <height>240</height>
+    <width>414</width>
+    <height>114</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="btnAoAWingTare">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>260</x>
-     <y>80</y>
-     <width>161</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Set AoA Wing Tare</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="lblRawAoA">
-   <property name="geometry">
-    <rect>
-     <x>280</x>
-     <y>20</y>
-     <width>81</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Raw AoA:</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="txtRawAoA">
-   <property name="geometry">
-    <rect>
-     <x>370</x>
-     <y>20</y>
-     <width>56</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>18</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>N/A</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="lblRawAirspeed">
    <property name="geometry">
     <rect>
@@ -123,8 +68,8 @@
   <widget class="QPushButton" name="btnDone">
    <property name="geometry">
     <rect>
-     <x>310</x>
-     <y>190</y>
+     <x>280</x>
+     <y>50</y>
      <width>110</width>
      <height>32</height>
     </rect>
@@ -134,70 +79,6 @@
    </property>
    <property name="default">
     <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btnAoAPlatformTare">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="geometry">
-    <rect>
-     <x>260</x>
-     <y>50</y>
-     <width>161</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Set AoA Platform Tare</string>
-   </property>
-  </widget>
-  <widget class="QDoubleSpinBox" name="inpAoAOffset">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>120</y>
-     <width>62</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-    </font>
-   </property>
-   <property name="decimals">
-    <number>1</number>
-   </property>
-   <property name="maximum">
-    <double>90.000000000000000</double>
-   </property>
-   <property name="singleStep">
-    <double>0.100000000000000</double>
-   </property>
-   <property name="value">
-    <double>0.000000000000000</double>
-   </property>
-  </widget>
-  <widget class="QLabel" name="lblAoAOffset">
-   <property name="geometry">
-    <rect>
-     <x>240</x>
-     <y>120</y>
-     <width>101</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>14</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>AoA Offset:</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
  </widget>

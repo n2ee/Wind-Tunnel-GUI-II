@@ -23,11 +23,11 @@
       <height>32</height>
      </rect>
     </property>
+    <property name="toolTipDuration">
+     <number>4</number>
+    </property>
     <property name="text">
      <string>Set Load Tare</string>
-    </property>
-    <property name="toolTipDuration" stdset="0">
-     <number>4</number>
     </property>
    </widget>
    <widget class="QLineEdit" name="inpRunName">
@@ -104,7 +104,7 @@
    <widget class="QLabel" name="lblAirspeed">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>0</x>
       <y>140</y>
       <width>61</width>
       <height>16</height>
@@ -120,7 +120,7 @@
    <widget class="QLabel" name="lblMPHAirspeed">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>130</x>
       <y>150</y>
       <width>31</width>
       <height>16</height>
@@ -133,7 +133,7 @@
    <widget class="QLabel" name="lblFtPerSecAirspeed">
     <property name="geometry">
      <rect>
-      <x>310</x>
+      <x>130</x>
       <y>190</y>
       <width>41</width>
       <height>16</height>
@@ -146,7 +146,7 @@
    <widget class="QLCDNumber" name="outSpeedMPH">
     <property name="geometry">
      <rect>
-      <x>240</x>
+      <x>60</x>
       <y>140</y>
       <width>61</width>
       <height>31</height>
@@ -265,7 +265,7 @@
    <widget class="QLCDNumber" name="outSpeedFps">
     <property name="geometry">
      <rect>
-      <x>220</x>
+      <x>40</x>
       <y>180</y>
       <width>81</width>
       <height>21</height>
@@ -294,56 +294,11 @@
      <enum>QLCDNumber::Flat</enum>
     </property>
    </widget>
-   <widget class="QLabel" name="lblAoA">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>140</y>
-      <width>41</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>AoA:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLCDNumber" name="outAoaDeg">
-    <property name="geometry">
-     <rect>
-      <x>70</x>
-      <y>140</y>
-      <width>61</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="digitCount">
-     <number>4</number>
-    </property>
-    <property name="segmentStyle">
-     <enum>QLCDNumber::Flat</enum>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblAoADeg">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>150</y>
-      <width>31</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Deg</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="lblPower">
     <property name="geometry">
      <rect>
       <x>400</x>
-      <y>240</y>
+      <y>150</y>
       <width>41</width>
       <height>20</height>
      </rect>
@@ -359,7 +314,7 @@
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>230</y>
+      <y>140</y>
       <width>71</width>
       <height>31</height>
      </rect>
@@ -375,7 +330,7 @@
     <property name="geometry">
      <rect>
       <x>530</x>
-      <y>240</y>
+      <y>150</y>
       <width>16</width>
       <height>16</height>
      </rect>
@@ -387,7 +342,7 @@
    <widget class="QLCDNumber" name="outAnemometerMPH">
     <property name="geometry">
      <rect>
-      <x>440</x>
+      <x>260</x>
       <y>140</y>
       <width>81</width>
       <height>31</height>
@@ -403,7 +358,7 @@
    <widget class="QLabel" name="lblAnemometer">
     <property name="geometry">
      <rect>
-      <x>350</x>
+      <x>170</x>
       <y>140</y>
       <width>91</width>
       <height>20</height>
@@ -419,7 +374,7 @@
    <widget class="QLabel" name="lblFtPerSecAnemometer">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>350</x>
       <y>180</y>
       <width>41</width>
       <height>16</height>
@@ -432,7 +387,7 @@
    <widget class="QLCDNumber" name="outAnemometerFps">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>250</x>
       <y>180</y>
       <width>91</width>
       <height>21</height>
@@ -448,7 +403,7 @@
    <widget class="QLabel" name="lblMPHAnemometer">
     <property name="geometry">
      <rect>
-      <x>530</x>
+      <x>350</x>
       <y>150</y>
       <width>31</width>
       <height>16</height>
@@ -472,11 +427,11 @@
       <pointsize>10</pointsize>
      </font>
     </property>
+    <property name="toolTipDuration">
+     <number>4</number>
+    </property>
     <property name="text">
      <string>Calibrate...</string>
-    </property>
-    <property name="toolTipDuration" stdset="0">
-     <number>4</number>
     </property>
    </widget>
    <widget class="QLabel" name="lblPerSec">
@@ -666,51 +621,6 @@
      <string>Saving...</string>
     </property>
    </widget>
-   <widget class="QLabel" name="lblAoAOffsetDeg">
-    <property name="geometry">
-     <rect>
-      <x>140</x>
-      <y>190</y>
-      <width>31</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Deg</string>
-    </property>
-   </widget>
-   <widget class="QLCDNumber" name="outAoaOffsetDeg">
-    <property name="geometry">
-     <rect>
-      <x>70</x>
-      <y>180</y>
-      <width>61</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="digitCount">
-     <number>4</number>
-    </property>
-    <property name="segmentStyle">
-     <enum>QLCDNumber::Flat</enum>
-    </property>
-   </widget>
-   <widget class="QLabel" name="lblAoAOffset">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>180</y>
-      <width>41</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Offset:</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
    <widget class="QLabel" name="lblMotor1">
     <property name="geometry">
      <rect>
@@ -825,9 +735,6 @@
    <zorder>lblSampleRate</zorder>
    <zorder>outSpeedFps</zorder>
    <zorder>outSampleRate</zorder>
-   <zorder>lblAoA</zorder>
-   <zorder>outAoaDeg</zorder>
-   <zorder>lblAoADeg</zorder>
    <zorder>lblPower</zorder>
    <zorder>outPower</zorder>
    <zorder>lblWatts</zorder>
@@ -842,9 +749,6 @@
    <zorder>inpComments</zorder>
    <zorder>lblComments</zorder>
    <zorder>lblSaving</zorder>
-   <zorder>lblAoAOffsetDeg</zorder>
-   <zorder>outAoaOffsetDeg</zorder>
-   <zorder>lblAoAOffset</zorder>
    <zorder>lblMotor1</zorder>
    <zorder>lblMotor2</zorder>
    <zorder>lblMotor3</zorder>

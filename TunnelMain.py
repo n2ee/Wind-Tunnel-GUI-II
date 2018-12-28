@@ -60,21 +60,6 @@ class TunnelGui(QtWidgets.QMainWindow, Tunnel_Model.Ui_MainWindow):
 
         self.dialogCalibrateUi.btnDone.clicked.connect(self.calibrationDone)
         self.dialogCalibrateUi.btnAirspeedTare.clicked.connect(self.airspeedTare)
-        self.dialogCalibrateUi.btnAoAWingTare.clicked.connect(self.aoaWingTare)
-        self.dialogCalibrateUi.btnAoAPlatformTare.clicked.connect(self.aoaPlatformTare)
-
-        # Initialize the platform offset from the persist file. Can't wait
-        # until SampleCollector is alive, so we read it directly from the
-        # file. Woe be unto me if I change the name of the persist value...
-        aoaPlatformOffset = TunnelPersist().getItem("AoA", "PlatformOffset")
-        if aoaPlatformOffset == None:
-            aoaPlatformOffset = 0.0
-        else:
-            aoaPlatformOffset = float(aoaPlatformOffset)
-
-        self.dialogCalibrateUi.inpAoAOffset.setValue(aoaPlatformOffset)
-        self.setAoAOffset(aoaPlatformOffset)
-        
         # Set the Saving... text to nothing for now. When the Save button
         # is clicked, we'll light it up for a moment.
         self.lblSaving.setText("")
@@ -87,16 +72,8 @@ class TunnelGui(QtWidgets.QMainWindow, Tunnel_Model.Ui_MainWindow):
         self.dialogCalibrate.show()
 
     def calibrationDone(self):
-        offset = self.dialogCalibrateUi.inpAoAOffset.value()
-        self.sampleCollector.setAoAPlatformOffset(offset)
-        self.setAoAOffset(offset)
+        return
         
-    def aoaWingTare(self):
-        self.sampleCollector.setAoAWingTare()
-
-    def aoaPlatformTare(self):
-        self.sampleCollector.setAoAPlatformTare()
-
     def airspeedTare(self):
         self.sampleCollector.setAirspeedTare()
 
@@ -154,14 +131,6 @@ class TunnelGui(QtWidgets.QMainWindow, Tunnel_Model.Ui_MainWindow):
         sampleRate = self.outSampleRate.value()
         print ("Start sampling at " + str(sampleRate) + " samples/sec")
 
-    def setAoa(self, aoa):
-        aoa = float('%.1f' % aoa)
-        self.outAoaDeg.display(str(aoa))
-
-    def setAoAOffset(self, offset):
-        offset = float('%.1f' % offset)
-        self.outAoaOffsetDeg.display(str(offset))
-
     def setAirspeed(self, speed):
         speed = float('%.1f' % speed)
         self.outSpeedMPH.display(str(speed))
@@ -193,9 +162,6 @@ class TunnelGui(QtWidgets.QMainWindow, Tunnel_Model.Ui_MainWindow):
         power = float('%.1f' % power)
         self.outPower.display(str(power))
 
-    def setRawAoA(self, aoa):
-        self.dialogCalibrateUi.txtRawAoA.setText(str(aoa))
-        
     def setRawAirspeed(self, airspeed):
         self.dialogCalibrateUi.txtRawAirspeed.setText(str(airspeed))
        
@@ -210,11 +176,9 @@ class TunnelGui(QtWidgets.QMainWindow, Tunnel_Model.Ui_MainWindow):
             
     @pyqtSlot(ProcessedSample)
     def refreshWindow(self, currentData):
-        self.setRawAoA(currentData.rawAoA)
         self.setRawAirspeed(currentData.rawAirspeed)
         
         self.setPower(currentData.volts * currentData.amps)
-        self.setAoa(currentData.wingAoA)
         self.setAirspeed(currentData.airspeed)
         self.setAnenometer(currentData.hotwire)
 

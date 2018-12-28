@@ -56,13 +56,11 @@ class SensorReader(QThread):
             serialNo = int(config.getItem("PhidgetBoards", "airspeedserialno"))
             airspeedPort = int(config.getItem("PhidgetBoards", "airspeedport"))
             hotwirePort = int(config.getItem("PhidgetBoards", "hotwireport"))
-            aoaPort = int(config.getItem("PhidgetBoards", "aoaport"))
             voltsPort = int(config.getItem("PhidgetBoards", "voltsport"))
             ampsPort = int(config.getItem("PhidgetBoards", "ampsport"))
             
             self.airspeed = AnalogInput(serialNo, airspeedPort)
             self.hotwire = AnalogInput(serialNo, hotwirePort)
-            self.aoa = AnalogInput(serialNo, aoaPort)
             self.volts = AnalogInput(serialNo, voltsPort)
             self.amps = AnalogInput(serialNo, ampsPort)
 
@@ -76,7 +74,6 @@ class SensorReader(QThread):
     def __del__(self):
         
         # Cleanup all the phidget channels
-        self.aoa.close()
         self.hotwire.close()
         self.airspeed.close()
         self.drag.close()
@@ -90,8 +87,6 @@ class SensorReader(QThread):
             try:
                 currentSample.airspeed = self.airspeed.getScaledValue(1000)
                 currentSample.hotwire = self.hotwire.getScaledValue(1000)
-                
-                currentSample.aoa = self.aoa.getScaledValue(1000)
                 
                 currentSample.volts = self.volts.getVoltage()
                 currentSample.amps = self.amps.getVoltage()
