@@ -171,10 +171,10 @@ class TunnelGui(QtWidgets.QMainWindow, Tunnel_Model.Ui_MainWindow):
 
     def setAnenometer(self, speed):
         speed = float('%.1f' % speed)
-        self.outAnemometerMPH.display(str(speed))
-        speed = speed * 5280.0 / 3600.0
-        speed = float('%.1f' % speed)
         self.outAnemometerFps.display(str(speed))
+        speed = speed * 3600.0 / 5280.0
+        speed = float('%.1f' % speed)
+        self.outAnemometerMPH.display(str(speed))
 
     def setDrag(self, drag, stddev):
         drag = float('%.2f' % drag)

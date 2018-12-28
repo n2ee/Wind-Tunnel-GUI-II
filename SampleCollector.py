@@ -170,7 +170,7 @@ class SampleCollector(QThread):
 
         dragFilter = RollingAverageFilter(10)
         airspeedFilter = RollingAverageFilter(10)
-        hotwireFilter = RollingAverageFilter(10)
+        hotwireFilter = RollingAverageFilter(20)
         wingAoA = 0
         platformAoA = 0
         
@@ -244,11 +244,17 @@ class SampleCollector(QThread):
                 airspeed = 0.0
 
             # Compute hotwire speed
-            hotwire = latestSample.hotwire
-            hotwire = hotwire * self.hotwireSlope + self.hotwireZero
+            hotwireCounts = latestSample.hotwire
+            hotwirePressure = (hotwireCounts - self.hotwireZero) / 1379.3
+
+            try:
+                hotwire = sqrt((hotwirePressure * self.hotwireSlope * 144.0  * 2.0) / 0.002378)
+            except ValueError:
+                # hotwirePressure went negative due to rounding errors
+                hotwire= 0.0
+
             if (hotwire < self.airspeedLowerLimit):
                 hotwire = 0.0
-
 
             # Generate filtered values
             fDrag = dragFilter.get_filtered_value(drag)
