@@ -49,6 +49,6 @@ if __name__ == "__main__":
     tunnelConfig = TunnelConfig()
     
     print (tunnelConfig.getItem("Version", "version"))
-    print (tunnelConfig.getItem("PhidgetBoards", "liftboardserialno"))
+    print (tunnelConfig.getItem("PhidgetBoards", "dragboardserialno"))
     print (tunnelConfig.getItem("General", "UseSimulatedData"))
     print (tunnelConfig.getItem("General", "DataDestinationDir"))
